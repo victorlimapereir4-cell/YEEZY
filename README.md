@@ -15,7 +15,7 @@ Este trabalho aborda a paralelização do algoritmo **K-Means Clustering** aplic
 https://www.kaggle.com/datasets/ericanacletoribeiro/cicids2017-cleaned-and-preprocessed
 
 * **Algoritmo:** K-Means Iterativo com Redução Global.
-* **Volume de Dados:** Matriz de **2.520.751 linhas x 52 colunas** (~2.5 GB em memória).
+* **Volume de Dados:** Matriz de **2.520.751 linhas x 52 colunas**.
 * **Objetivo:** Reduzir o tempo de processamento matemático utilizando o padrão de *Data Parallelism* e avaliar os limites de escalabilidade do hardware.
 
 ---
