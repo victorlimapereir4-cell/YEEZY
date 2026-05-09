@@ -75,7 +75,57 @@ A aplicação demonstrou um comportamento clássico de paralelização de carga 
 3) **A Saturação de Hardware:** O ponto mais importante do experimento reside na transição de 8 para 12 processos, onde o tempo foi estritamente igual (~37.1 segundos), zerando o ganho de Speedup e afundando a eficiência para 18.6%. A principal causa técnica para este platô é o estrangulamento da largura de banda da memória (Memory Bandwidth Bottleneck). Os núcleos da CPU passaram a computar a matemática mais rápido do que a memória RAM conseguia entregar as fatias da matriz de 52 dimensões. Ademais, o chaveamento de contexto no agendador do SO para gerenciar 12 processos gerou uma contenção que anulou a adição dos novos núcleos.
 ---
 
-# 7. Conclusão
+# 7. Gráfico de Tempo de Execução
+
+Construa um gráfico mostrando o **tempo de execução em função do número de threads/processos**.
+
+## Orientações
+
+* Eixo X: número de threads/processos
+* Eixo Y: tempo de execução (segundos)
+
+Inserir o gráfico abaixo:
+
+![Gráfico Tempo Execução](graficos/tempo_execucao.png)
+
+---
+
+# 8. Gráfico de Speedup
+
+Construa um gráfico mostrando o **speedup obtido**.
+
+## Orientações
+
+* Eixo X: número de threads/processos
+* Eixo Y: speedup
+* Incluir também a **linha de speedup ideal (linear)** para comparação
+
+Inserir o gráfico abaixo:
+
+![Gráfico Speedup](graficos/speedup.png)
+
+---
+
+# 9. Gráfico de Eficiência
+
+Construa um gráfico mostrando a **eficiência da paralelização**.
+
+## Orientações
+
+* Eixo X: número de threads/processos
+* Eixo Y: eficiência
+* Valores entre 0 e 1
+
+Inserir o gráfico abaixo:
+
+![Gráfico Eficiência](graficos/eficiencia.png)
+
+---
+
+# 10. Conclusão
 
 O paralelismo trouxe um ganho real de **2.23x** de velocidade. O "ponto ideal" para este hardware foi de **8 processos**. Acima disso, o custo de gerenciar novos processos anula o ganho computacional.
+O experimento validou a estratégia de Data Parallelism, provando que a execução concorrente em processadores multicore entrega um ganho de desempenho crítico (mais de 50% de redução no tempo) em tarefas de HPC e Big Data. O melhor desempenho absoluto e a melhor relação de custo-benefício (Sweet Spot) para este hardware específico ocorreu com 8 processos trabalhadores.
+
+Aumentar o número de threads/processes indiscriminadamente sem avaliar os limites do barramento do hardware provou-se ineficaz, confirmando os princípios teóricos da disciplina. Para escalar este problema ainda mais e otimizar a implementação, a solução ideal seria abandonar a CPU e portar a rotina para GPGPU (usando CUDA), paralelizando as operações de matrizes nativamente em milhares de núcleos menores com memória VRAM dedicada.
 
