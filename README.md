@@ -12,6 +12,8 @@
 
 Este trabalho aborda a paralelização do algoritmo **K-Means Clustering** aplicado ao dataset **CICIDS2017**. O problema consiste em agrupar milhões de fluxos de rede para identificar padrões de comportamento (anomalias e intrusões).
 
+https://www.kaggle.com/datasets/ericanacletoribeiro/cicids2017-cleaned-and-preprocessed
+
 * **Algoritmo:** K-Means Iterativo com Redução Global.
 * **Volume de Dados:** Matriz de **2.520.751 linhas x 52 colunas** (~2.5 GB em memória).
 * **Objetivo:** Reduzir o tempo de processamento matemático utilizando o padrão de *Data Parallelism* e avaliar os limites de escalabilidade do hardware.
