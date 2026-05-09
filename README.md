@@ -1,7 +1,7 @@
 # Relatório de Atividade: Programação Concorrente
 
 **Disciplina:** Programação Concorrente
-**Aluno:** Arthur Vitor Almeida Dias
+**Aluno:** Arthur Dias e Victor Hugo
 **Instituição:** Centro Universitário Unieuro
 **Curso:** Análise e Desenvolvimento de Sistemas (ADS)
 **Data:** 09 de Maio de 2026
@@ -22,10 +22,10 @@ Este trabalho aborda a paralelização do algoritmo **K-Means Clustering** aplic
 
 | Item                        | Descrição |
 | --------------------------- | --------- |
-| Processador                 | CPU Multicore (Capacidade de até 12 threads) |
-| Memória RAM                 | 16 GB+ (Necessário para alocação do dataset CICIDS2017) |
-| Sistema Operacional         | Windows / Linux |
-| Linguagem utilizada         | Python 3.10+ |
+| Processador                 | 6-Core Processor |
+| Memória RAM                 | 32,0 GB |
+| Sistema Operacional         | Windows  |
+| Linguagem utilizada         | Python 3.13.7 |
 | Biblioteca de paralelização | `multiprocessing` |
 
 ---
@@ -66,12 +66,13 @@ Os testes foram realizados isolando o tempo de **CPU (Processamento)** do tempo 
 
 # 6. Análise dos Resultados
 
-A análise dos dados revela três pontos críticos:
+A aplicação demonstrou um comportamento clássico de paralelização de carga de matrizes pesadas, com pontos altos e restrições de arquitetura visíveis:
 
-1.  **Gargalo de Comunicação (Overhead):** A eficiência cai de 100% para 67% ao dobrar os processos. Isso ocorre devido ao custo de serialização (Pickle) e comunicação entre processos em Python.
-2.  **Saturação de Barramento:** O tempo entre 8 e 12 processos foi praticamente idêntico. Isso indica que o sistema atingiu o **limite de largura de banda de memória**, onde a RAM não consegue entregar dados mais rápido do que os núcleos processam.
-3.  **Lei de Amdahl:** A parte serial do código (sincronização de centroides no fim de cada iteração) limita o speedup máximo possível, impedindo um ganho linear.
+1) **A Escalabilidade:** O sistema escalou bem inicialmente, reduzindo o tempo de execução de 82.98s (Serial) para 37.15s (8 Processos). O Speedup máximo obtido (2.23x) esteve abaixo do ideal teórico linear, o que é esperado em algoritmos iterativos (como o K-Means), pois a etapa de Redução Global e a Sincronização por Barreira criam gargalos seriais impossíveis de paralelizar (Lei de Amdahl).
 
+2) **O Declínio da Eficiência:** A eficiência começou a cair drasticamente logo na transição para 4 processos (atingindo 39%). Esse fenômeno é causado diretamente pelo Overhead de IPC (Inter-Process Communication). A biblioteca do Python necessita realizar a cópia e serialização das matrizes entre os trabalhadores, consumindo tempo valioso do sistema operacional.
+
+3) **A Saturação de Hardware:** O ponto mais importante do experimento reside na transição de 8 para 12 processos, onde o tempo foi estritamente igual (~37.1 segundos), zerando o ganho de Speedup e afundando a eficiência para 18.6%. A principal causa técnica para este platô é o estrangulamento da largura de banda da memória (Memory Bandwidth Bottleneck). Os núcleos da CPU passaram a computar a matemática mais rápido do que a memória RAM conseguia entregar as fatias da matriz de 52 dimensões. Ademais, o chaveamento de contexto no agendador do SO para gerenciar 12 processos gerou uma contenção que anulou a adição dos novos núcleos.
 ---
 
 # 7. Conclusão
