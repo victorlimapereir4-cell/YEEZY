@@ -1,4 +1,4 @@
-# 📊 Capítulo: Mapeamento dos Maiores Índices Criminais por Seccional (São Paulo Capital)
+# Mapeamento dos Maiores Índices Criminais por Seccional (São Paulo Capital)
 ## Relatório Técnico de Desempenho Computacional (Serial vs. Concorrente)
 
 **Disciplina:** Programação Concorrente  
