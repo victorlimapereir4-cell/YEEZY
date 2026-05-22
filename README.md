@@ -1,133 +1,138 @@
-# Relatório de Atividade: Programação Concorrente
+# Relatório da Atividade: Extração de Estatísticas Criminais
 
 **Disciplina:** Programação Concorrente
 **Aluno:** Arthur Dias e Victor Hugo
 **Instituição:** Centro Universitário Unieuro
 **Curso:** Análise e Desenvolvimento de Sistemas (ADS)
-**Data:** 09 de Maio de 2026
+**Data:** 22 de Maio de 2026
 
 ---
 
 # 1. Descrição do Problema
 
-Este trabalho aborda a paralelização do algoritmo **K-Means Clustering** aplicado ao dataset **CICIDS2017**. O problema consiste em agrupar milhões de fluxos de rede para identificar padrões de comportamento (anomalias e intrusões).
+O problema computacional resolvido neste projeto consiste no processamento massivo de microdados de segurança pública para extrair inteligência tática. O objetivo é ler o dataset "Crime Data in Brazil" (baseado no SINESP), mapear as tipificações criminais (`RUBRICA`) por município (`CIDADE`), filtrar registros inválidos através da coluna `FLAG_STATUS` e retornar o "Top 5" dos crimes mais frequentes para cada localidade.
 
-https://www.kaggle.com/datasets/ericanacletoribeiro/cicids2017-cleaned-and-preprocessed
-
-* **Algoritmo:** K-Means Iterativo com Redução Global.
-* **Volume de Dados:** Matriz de **2.520.751 linhas x 52 colunas**.
-* **Objetivo:** Reduzir o tempo de processamento matemático utilizando o padrão de *Data Parallelism* e avaliar os limites de escalabilidade do hardware.
+A extração dessa métrica é custosa computacionalmente devido ao alto volume de linhas, exigindo varredura completa do arquivo, validação, agrupamento e ordenação. A paralelização foi aplicada visando fragmentar o banco de dados em lotes (*chunks*), permitindo que múltiplos núcleos do processador realizem o filtro e a contagem parcial simultaneamente, mitigando o gargalo de I/O e processamento. O algoritmo possui complexidade assintótica aproximada de $O(N \log N)$ na fase de ordenação do agrupamento final, onde $N$ representa o volume total de ocorrências válidas.
 
 ---
 
 # 2. Ambiente Experimental
 
+Os testes foram conduzidos na seguinte arquitetura:
+
 | Item                        | Descrição |
 | --------------------------- | --------- |
 | Processador                 | 6-Core Processor |
+| Número de núcleos           | [Ex: 8 núcleos físicos / 16 lógicos] |
 | Memória RAM                 | 32,0 GB |
 | Sistema Operacional         | Windows  |
 | Linguagem utilizada         | Python 3.13.7 |
-| Biblioteca de paralelização | `multiprocessing` |
+| Biblioteca de paralelização | `concurrent.futures` (ProcessPoolExecutor) e `pandas` |
+| Compilador / Versão         | -CPython 3.10]- |
 
 ---
 
 # 3. Metodologia de Testes
 
-Os testes foram realizados isolando o tempo de **CPU (Processamento)** do tempo de **I/O (Leitura)**. O cronômetro foi acionado apenas após a carga completa dos dados na RAM.
+O tempo de execução foi aferido via software utilizando a biblioteca nativa `time`, capturando o *timestamp* imediatamente antes da alocação do arquivo em memória e logo após a obtenção do dataframe final já ordenado com o Top 5.
 
-* **Métricas:** Tempo de Execução (s), Speedup e Eficiência.
-* **Cargas Testadas:** 1, 2, 4, 8 e 12 processos.
-* **Iterações:** 10 iterações globais para cada teste.
+O arquivo original possui mais de [Inserir total de linhas, aprox. milhões] de registros. Para otimização de memória, a leitura foi particionada em lotes de 100.000 linhas.
+
+### Configurações testadas
+
+Os experimentos foram padronizados nas seguintes configurações:
+
+* 1 thread/processo (versão serial)
+* 2 threads/processos
+* 4 threads/processos
+* 8 threads/processos
+* 12 threads/processos *(Testado via limitação de workers no executor)*
+
+### Procedimento experimental
+
+Foram realizadas [Ex: 5] execuções completas para cada configuração de concorrência. O tempo documentado nos resultados consiste na média aritmética simples dessas execuções, descartando anomalias causadas por picos de interferência do SO. A máquina operou em ambiente isolado, com encerramento prévio de aplicações em segundo plano para reduzir a disputa de uso de disco e CPU.
 
 ---
 
 # 4. Resultados Experimentais
 
-| Nº Processos | Tempo de Execução (s) |
-| :----------: | :-------------------: |
-| 1 (Serial)   | 82.98                 |
-| 2            | 61.79                 |
-| 4            | 53.07                 |
-| 8            | 37.16                 |
-| 12           | 37.13                 |
+| Nº Threads/Processos | Tempo de Execução (s) |
+| -------------------- | --------------------- |
+| 1                    | [Preencher]           |
+| 2                    | [Preencher]           |
+| 4                    | [Preencher]           |
+| 8                    | [Preencher]           |
+| 12                   | [Preencher]           |
 
 ---
 
 # 5. Cálculo de Speedup e Eficiência
 
-| Processos | Tempo (s) | Speedup | Eficiência |
-| :-------: | :-------: | :-----: | :--------: |
-| 1         | 82.98     | 1.00x   | 1.00       |
-| 2         | 61.79     | 1.34x   | 0.67       |
-| 4         | 53.07     | 1.56x   | 0.39       |
-| 8         | 37.16     | 2.23x   | 0.28       |
-| 12        | 37.13     | 2.23x   | 0.19       |
+## Fórmulas Utilizadas
+
+### Speedup
+Speedup(p) = T(1) / T(p)
+Onde:
+* **T(1)** = tempo da execução serial
+* **T(p)** = tempo com p processos
+
+### Eficiência
+Eficiência(p) = Speedup(p) / p
+Onde:
+* **p** = número de processos
 
 ---
 
-# 6. Análise dos Resultados
+# 6. Tabela de Resultados
 
-A aplicação demonstrou um comportamento clássico de paralelização de carga de matrizes pesadas, com pontos altos e restrições de arquitetura visíveis:
+| Threads/Processos | Tempo (s) | Speedup     | Eficiência |
+| ----------------- | --------- | ----------- | ---------- |
+| 1                 | [Preencher]| 1.0        | 1.0        |
+| 2                 | [Preencher]| [Calcular] | [Calcular] |
+| 4                 | [Preencher]| [Calcular] | [Calcular] |
+| 8                 | [Preencher]| [Calcular] | [Calcular] |
+| 12                | [Preencher]| [Calcular] | [Calcular] |
 
-1) **A Escalabilidade:** O sistema escalou bem inicialmente, reduzindo o tempo de execução de 82.98s (Serial) para 37.15s (8 Processos). O Speedup máximo obtido (2.23x) esteve abaixo do ideal teórico linear, o que é esperado em algoritmos iterativos (como o K-Means), pois a etapa de Redução Global e a Sincronização por Barreira criam gargalos seriais impossíveis de paralelizar (Lei de Amdahl).
-
-2) **O Declínio da Eficiência:** A eficiência começou a cair drasticamente logo na transição para 4 processos (atingindo 39%). Esse fenômeno é causado diretamente pelo Overhead de IPC (Inter-Process Communication). A biblioteca do Python necessita realizar a cópia e serialização das matrizes entre os trabalhadores, consumindo tempo valioso do sistema operacional.
-
-3) **A Saturação de Hardware:** O ponto mais importante do experimento reside na transição de 8 para 12 processos, onde o tempo foi estritamente igual (~37.1 segundos), zerando o ganho de Speedup e afundando a eficiência para 18.6%. A principal causa técnica para este platô é o estrangulamento da largura de banda da memória (Memory Bandwidth Bottleneck). Os núcleos da CPU passaram a computar a matemática mais rápido do que a memória RAM conseguia entregar as fatias da matriz de 52 dimensões. Ademais, o chaveamento de contexto no agendador do SO para gerenciar 12 processos gerou uma contenção que anulou a adição dos novos núcleos.
 ---
 
 # 7. Gráfico de Tempo de Execução
-
-Construa um gráfico mostrando o **tempo de execução em função do número de threads/processos**.
-
-## Orientações
-
-* Eixo X: número de threads/processos
-* Eixo Y: tempo de execução (segundos)
-
-Inserir o gráfico abaixo:
+*(Substituir pelo seu gráfico gerado nas planilhas)*
 
 ![Gráfico Tempo Execução](graficos/tempo_execucao.png)
 
 ---
 
 # 8. Gráfico de Speedup
-
-Construa um gráfico mostrando o **speedup obtido**.
-
-## Orientações
-
-* Eixo X: número de threads/processos
-* Eixo Y: speedup
-* Incluir também a **linha de speedup ideal (linear)** para comparação
-
-Inserir o gráfico abaixo:
+*(Substituir pelo seu gráfico gerado nas planilhas)*
 
 ![Gráfico Speedup](graficos/speedup.png)
 
 ---
 
 # 9. Gráfico de Eficiência
-
-Construa um gráfico mostrando a **eficiência da paralelização**.
-
-## Orientações
-
-* Eixo X: número de threads/processos
-* Eixo Y: eficiência
-* Valores entre 0 e 1
-
-Inserir o gráfico abaixo:
+*(Substituir pelo seu gráfico gerado nas planilhas)*
 
 ![Gráfico Eficiência](graficos/eficiencia.png)
 
 ---
 
-# 10. Conclusão
+# 10. Análise dos Resultados
 
-O paralelismo trouxe um ganho real de **2.23x** de velocidade. O "ponto ideal" para este hardware foi de **8 processos**. Acima disso, o custo de gerenciar novos processos anula o ganho computacional.
-O experimento validou a estratégia de Data Parallelism, provando que a execução concorrente em processadores multicore entrega um ganho de desempenho crítico (mais de 50% de redução no tempo) em tarefas de HPC e Big Data. O melhor desempenho absoluto e a melhor relação de custo-benefício (Sweet Spot) para este hardware específico ocorreu com 8 processos trabalhadores.
+[**Nota:** *Abaixo estão os guias para você preencher após rodar os testes*]
 
-Aumentar o número de threads/processes indiscriminadamente sem avaliar os limites do barramento do hardware provou-se ineficaz, confirmando os princípios teóricos da disciplina. Para escalar este problema ainda mais e otimizar a implementação, a solução ideal seria abandonar a CPU e portar a rotina para GPGPU (usando CUDA), paralelizando as operações de matrizes nativamente em milhares de núcleos menores com memória VRAM dedicada.
+* **Speedup e Escalabilidade:** [Discutir se o tempo diminuiu pela metade ao dobrar os processos, ou se houve um platô].
+* **Eficiência:** [Comentar em qual número de processos a eficiência começou a cair drasticamente].
+* **Overhead:** A criação de processos na linguagem Python possui um custo computacional considerável (overhead) devido à necessidade de serializar (Pickle) os blocos de dados entre a memória do processo principal e os trabalhadores.
+* **Gargalos:** O principal gargalo da aplicação demonstrou ser o I/O (leitura do disco rígido). Mesmo que múltiplos processadores estejam agrupando os dados rapidamente, eles ainda dependem da velocidade de leitura mecânica/sólida do armazenamento local para extrair os arquivos do CSV.
 
+O algoritmo foi modelado para contornar uma falha estrutural do sistema R.D.O. (Registro Digital de Ocorrências), onde boletins com múltiplas vítimas geram linhas duplicadas. A concorrência atua na limpeza pesada (data cleansing) intra-lotes de milhares de linhas simultaneamente, enquanto a thread principal realiza a consolidação final das chaves únicas (ID_DELEGACIA, ANO_BO e NUM_BO), garantindo a integridade da estatística sem comprometer o tempo de execução.
+
+---
+
+# 11. Conclusão
+
+[**Nota:** *Preencher com sua visão final*]
+
+A aplicação do paralelismo em nível de dados (SIMD/SPMD) mostrou-se extremamente pertinente para a extração de inteligência em ocorrências criminais. A divisão do trabalho permitiu agrupar a dinâmica de milhares de municípios de forma muito mais célere do que o gargalo de processamento único.
+
+Como melhoria futura de implementação e aplicação de arquitetura para pronto-resposta, os dados brutos poderiam ser alocados em bancos estruturados distribuídos e consultados paralelamente, eliminando o custo de I/O de um arquivo CSV pesado na máquina local.
