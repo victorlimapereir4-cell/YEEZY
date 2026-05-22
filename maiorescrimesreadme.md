@@ -130,29 +130,7 @@ Abaixo constam os microdados consolidados gerados pelo algoritmo concorrente. El
 * **DECAP - SEDE:** Apresentou uma contagem isolada de apenas **2 ocorrências de Furto (art. 155)** em todo o período. Isso comprova o funcionamento perfeito do algoritmo de agrupamento, evidenciando que a sede administrativa não realiza registros de atendimento de rua, servindo apenas como centro de gestão policial. As raras incidências decorrem de registros de patrimônio interno ou desvios de preenchimento.
 
 ### Manchas Criminais Dominantes por Zona Administrativa:
-
-========================================================================================
-REGIONAL (SECCIONAL)        | CRIME (RUBRICA)                                | CONTAGEM
-========================================================================================
-DEL.SEC.1º CENTRO           | Furto (art. 155)                               | 462.534
-DEL.SEC.1º CENTRO           | Roubo (art. 157)                               | 185.088
-DEL.SEC.1º CENTRO           | Furto qualificado (art. 155, §4o.)             |  72.930
-DEL.SEC.1º CENTRO           | Lesão corporal (art. 129)                      |  33.307
-DEL.SEC.1º CENTRO           | Lesão corporal culposa na direção de veículo   |  30.862
-----------------------------------------------------------------------------------------
-DEL.SEC.2º SUL              | Roubo (art. 157)                               | 223.210
-DEL.SEC.2º SUL              | Furto (art. 155)                               | 215.657
-DEL.SEC.2º SUL              | Furto qualificado (art. 155, §4o.)             |  51.033
-DEL.SEC.2º SUL              | Lesão corporal (art. 129)                      |  27.290
-DEL.SEC.2º SUL              | Lesão corporal culposa na direção de veículo   |  25.902
-----------------------------------------------------------------------------------------
-DEL.SEC.3º OESTE            | Furto (art. 155)                               | 401.760
-DEL.SEC.3º OESTE            | Roubo (art. 157)                               | 279.908
-DEL.SEC.3º OESTE            | Furto qualificado (art. 155, §4o.)             |  60.628
-DEL.SEC.3º OESTE            | Lesão corporal culposa na direção de veículo   |  45.423
-========================================================================================
-
-### Os 5 Crimes Mais Relatados por Zona Administrativa:
+    (Os 5 Crimes Mais Relatados por Zona Administrativa:)
 
 | NOME_SECCIONAL_CIRC | RUBRICA | CONTAGEM |
 | :--- | :--- | :--- |
