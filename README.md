@@ -1,4 +1,5 @@
-# Relatório da Atividade: Extração de Estatísticas Criminais
+# Inteligência Criminal em Larga Escala: Programação Serial vs. Concorrente
+
 
 **Disciplina:** Programação Concorrente
 **Aluno:** Arthur Dias e Victor Hugo
@@ -6,133 +7,75 @@
 **Curso:** Análise e Desenvolvimento de Sistemas (ADS)
 **Data:** 22 de Maio de 2026
 
----
 
-# 1. Descrição do Problema
+[![Dataset](https://img.shields.io/badge/Dataset-SINESP%20SP-blue.svg)](https://www.kaggle.com/datasets/inquisitivecrow/crime-data-in-brazil)
+[![Status do Projeto](https://img.shields.io/badge/Status-Ativo-success)](#)
 
-O problema computacional resolvido neste projeto consiste no processamento massivo de microdados de segurança pública para extrair inteligência tática. O objetivo é ler o dataset "Crime Data in Brazil" (baseado no SINESP), mapear as tipificações criminais (`RUBRICA`) por município (`CIDADE`), filtrar registros inválidos através da coluna `FLAG_STATUS` e retornar o "Top 5" dos crimes mais frequentes para cada localidade.
-
-A extração dessa métrica é custosa computacionalmente devido ao alto volume de linhas, exigindo varredura completa do arquivo, validação, agrupamento e ordenação. A paralelização foi aplicada visando fragmentar o banco de dados em lotes (*chunks*), permitindo que múltiplos núcleos do processador realizem o filtro e a contagem parcial simultaneamente, mitigando o gargalo de I/O e processamento. O algoritmo possui complexidade assintótica aproximada de $O(N \log N)$ na fase de ordenação do agrupamento final, onde $N$ representa o volume total de ocorrências válidas.
 
 ---
 
-# 2. Ambiente Experimental
+##  Sobre o Ecossistema de Dados
 
-Os testes foram conduzidos na seguinte arquitetura:
+A fonte primária é o banco de dados [Crime Data in Brazil (Kaggle)](https://www.kaggle.com/datasets/inquisitivecrow/crime-data-in-brazil), que condensa milhares de registros extraídos do Sistema de Registro Digital de Ocorrências (R.D.O.) do Estado de São Paulo. 
 
-| Item                        | Descrição |
-| --------------------------- | --------- |
-| Processador                 | 6-Core Processor |
-| Número de núcleos           | [Ex: 8 núcleos físicos / 16 lógicos] |
-| Memória RAM                 | 32,0 GB |
-| Sistema Operacional         | Windows  |
-| Linguagem utilizada         | Python 3.13.7 |
-| Biblioteca de paralelização | `concurrent.futures` (ProcessPoolExecutor) e `pandas` |
-| Compilador / Versão         | -CPython 3.10]- |
+O escopo do projeto engloba o mapeamento cruzado das dezenas de colunas disponíveis nos arquivos `.csv` temporais, permitindo extrações complexas envolvendo:
 
----
+* **Dimensão Espacial:** Geolocalização (`LATITUDE`, `LONGITUDE`), Região Administrativa (`NOME_SECCIONAL_CIRC`) e Cidade.
+* **Dimensão Temporal:** Ano, Mês, Data exata e Hora do incidente.
+* **Dimensão Criminal:** Tipificação penal exata (`RUBRICA`), Desdobramento e Conduta.
+* **Dimensão Vitimológica:** Sexo, Idade, Cor, Grau de Instrução e Profissão da vítima.
 
-# 3. Metodologia de Testes
-
-O tempo de execução foi aferido via software utilizando a biblioteca nativa `time`, capturando o *timestamp* imediatamente antes da alocação do arquivo em memória e logo após a obtenção do dataframe final já ordenado com o Top 5.
-
-O arquivo original possui mais de [Inserir total de linhas, aprox. milhões] de registros. Para otimização de memória, a leitura foi particionada em lotes de 100.000 linhas.
-
-### Configurações testadas
-
-Os experimentos foram padronizados nas seguintes configurações:
-
-* 1 thread/processo (versão serial)
-* 2 threads/processos
-* 4 threads/processos
-* 8 threads/processos
-* 12 threads/processos *(Testado via limitação de workers no executor)*
-
-### Procedimento experimental
-
-Foram realizadas [Ex: 5] execuções completas para cada configuração de concorrência. O tempo documentado nos resultados consiste na média aritmética simples dessas execuções, descartando anomalias causadas por picos de interferência do SO. A máquina operou em ambiente isolado, com encerramento prévio de aplicações em segundo plano para reduzir a disputa de uso de disco e CPU.
+A riqueza estrutural da base permite que o sistema identifique desde a macro mancha criminal de uma região até o perfil micro da vítima de um delito específico em horários críticos.
 
 ---
 
-# 4. Resultados Experimentais
+##  Objetivos de Engenharia e Análise
 
-| Nº Threads/Processos | Tempo de Execução (s) |
-| -------------------- | --------------------- |
-| 1                    | [Preencher]           |
-| 2                    | [Preencher]           |
-| 4                    | [Preencher]           |
-| 8                    | [Preencher]           |
-| 12                   | [Preencher]           |
-
----
-
-# 5. Cálculo de Speedup e Eficiência
-
-## Fórmulas Utilizadas
-
-### Speedup
-Speedup(p) = T(1) / T(p)
-Onde:
-* **T(1)** = tempo da execução serial
-* **T(p)** = tempo com p processos
-
-### Eficiência
-Eficiência(p) = Speedup(p) / p
-Onde:
-* **p** = número de processos
+1. **Motor de Ingestão Resiliente:** Desenvolver rotinas capazes de ler arquivos pesados em lotes (*chunks*), contornando limitações de Memória RAM na máquina hospedeira.
+2. **Data Cleansing Avançado:** Implementar filtros em tempo real para eliminação de anomalias, como a duplicidade crônica de Boletins de Ocorrência com múltiplas vítimas (utilizando as chaves `ID_DELEGACIA`, `ANO_BO` e `NUM_BO`).
+3. **Benchmarking Arquitetural:** Projetar e rodar o mesmo escopo analítico sob duas arquiteturas:
+   * **Execução Serial:** Rotina *single-thread* atrelada a gargalos clássicos de tempo.
+   * **Execução Concorrente:** Distribuição de carga *multi-core* via `ProcessPoolExecutor`, forçando o *Global Interpreter Lock (GIL)* da linguagem.
+4. **Descoberta de Padrões (KDD):** Realizar análises de alto nível cruzando variáveis não triviais (ex: Relação entre nível de instrução e tipo de crime sofrido, ou sazonalidade de delitos por período do ano).
 
 ---
 
-# 6. Tabela de Resultados
+##  Stack Tecnológico
 
-| Threads/Processos | Tempo (s) | Speedup     | Eficiência |
-| ----------------- | --------- | ----------- | ---------- |
-| 1                 | [Preencher]| 1.0        | 1.0        |
-| 2                 | [Preencher]| [Calcular] | [Calcular] |
-| 4                 | [Preencher]| [Calcular] | [Calcular] |
-| 8                 | [Preencher]| [Calcular] | [Calcular] |
-| 12                | [Preencher]| [Calcular] | [Calcular] |
+* **Linguagem:** Python 3.13.7
+* **Processamento e Concorrência:** `concurrent.futures`, `multiprocessing`
+* **Manipulação de Dados Massivos:** `pandas` (leitura em *chunks* otimizada via *low_memory*)
+* **Gerenciamento de Sistema:** `os`, `time`, `glob`
+* **Plotagem de Gráficos (Relatórios):** `matplotlib`
 
 ---
 
-# 7. Gráfico de Tempo de Execução
-*(Substituir pelo seu gráfico gerado nas planilhas)*
+##  Estrutura de Execução
 
-![Gráfico Tempo Execução](graficos/tempo_execucao.png)
+### 1. Preparação do Ambiente
+O volume de dados exige armazenamento local. Crie a pasta `dados/` na raiz do projeto e deposite todos os arquivos `.csv` oriundos do dataset original do Kaggle.
 
----
+    # Instalação das dependências necessárias para manipulação e plotagem de dados
+    pip install pandas matplotlib tabulate
 
-# 8. Gráfico de Speedup
-*(Substituir pelo seu gráfico gerado nas planilhas)*
+### 2. A Bateria de Testes (*Benchmarks*)
+O repositório conta com *scripts* isolados para a aferição de métricas. O motor principal de paralelização pode ser submetido a testes de carga utilizando:
 
-![Gráfico Speedup](graficos/speedup.png)
+    python main_benchmark.py
 
----
-
-# 9. Gráfico de Eficiência
-*(Substituir pelo seu gráfico gerado nas planilhas)*
-
-![Gráfico Eficiência](graficos/eficiencia.png)
+> *A saída deste script gera a relação de tempo bruto associada a cargas progressivas de 1, 2, 4, 8 e 12 processos simultâneos.*
 
 ---
 
-# 10. Análise dos Resultados
+##  Entregáveis e Subprojetos
 
-[**Nota:** *Abaixo estão os guias para você preencher após rodar os testes*]
+Este repositório principal subdivide as extrações de dados em relatórios técnicos específicos, que atuam como "capítulos" práticos do trabalho.
 
-* **Speedup e Escalabilidade:** [Discutir se o tempo diminuiu pela metade ao dobrar os processos, ou se houve um platô].
-* **Eficiência:** [Comentar em qual número de processos a eficiência começou a cair drasticamente].
-* **Overhead:** A criação de processos na linguagem Python possui um custo computacional considerável (overhead) devido à necessidade de serializar (Pickle) os blocos de dados entre a memória do processo principal e os trabalhadores.
-* **Gargalos:** O principal gargalo da aplicação demonstrou ser o I/O (leitura do disco rígido). Mesmo que múltiplos processadores estejam agrupando os dados rapidamente, eles ainda dependem da velocidade de leitura mecânica/sólida do armazenamento local para extrair os arquivos do CSV.
+**Entregas Concluídas:**
 
-O algoritmo foi modelado para contornar uma falha estrutural do sistema R.D.O. (Registro Digital de Ocorrências), onde boletins com múltiplas vítimas geram linhas duplicadas. A concorrência atua na limpeza pesada (data cleansing) intra-lotes de milhares de linhas simultaneamente, enquanto a thread principal realiza a consolidação final das chaves únicas (ID_DELEGACIA, ANO_BO e NUM_BO), garantindo a integridade da estatística sem comprometer o tempo de execução.
+* **[ Mapeamento dos Maiores Índices Criminais por Seccional](maiorescrimesreadme.md)** - Focado na validação do *speedup* da máquina e no cálculo de domínio dos 5 maiores delitos patrimoniais e contra a vida mapeados na infraestrutura do DECAP.
 
----
+(**Próximos Passos (Backlog de Análises):**
 
-# 11. Conclusão
-
-[**Nota:** *Preencher com sua visão final*]
-
-A aplicação do paralelismo em nível de dados (SIMD/SPMD) mostrou-se extremamente pertinente para a extração de inteligência em ocorrências criminais. A divisão do trabalho permitiu agrupar a dinâmica de milhares de municípios de forma muito mais célere do que o gargalo de processamento único.
-
-Como melhoria futura de implementação e aplicação de arquitetura para pronto-resposta, os dados brutos poderiam ser alocados em bancos estruturados distribuídos e consultados paralelamente, eliminando o custo de I/O de um arquivo CSV pesado na máquina local.
+* Implementação de rotinas para cruzamento vitimológico (Gênero vs. Rubrica de Risco).
+* Mapeamento de Horários Críticos cruzados por Região.)
