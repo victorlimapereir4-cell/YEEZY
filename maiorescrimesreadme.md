@@ -122,7 +122,7 @@ O ponto ótimo de operação computacional na máquina de testes localizou-se na
 
 ---
 
-# 📋 APÊNDICE: Extração Estatística Realizada
+#  APÊNDICE: Extração Estatística Realizada
 
 Abaixo constam os microdados consolidados gerados pelo algoritmo concorrente. Eles revelam o panorama real e as manchas criminais dominantes identificadas nas principais Seccionais da Capital Paulista durante o período amostral:
 
