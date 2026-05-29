@@ -51,15 +51,11 @@ Cada configuração passou por execuções repetidas para extração da média a
 
 # 4. Resultados Experimentais
 
-Abaixo estão dispostos os **tempos médios de execução** obtidos na bateria de testes empíricos do projeto:
+Abaixo está disposto o tempo médio de execução serial obtido na bateria de testes empíricos do projeto:
 
 | Nº Threads/Processos | Tempo de Execução (s) |
 | :---: | :---: |
 | **1 (Serial)** | 59.47 |
-| **2** | 34.86 |
-| **4** | 22.29 |
-| **8** | 18.50 |
-| **12** | 17.20 |
 
 ---
 
