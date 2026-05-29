@@ -92,7 +92,6 @@ As características do ecossistema computacional utilizado:
 | **Sistema Operacional** | Windows 11 |
 | **Linguagem utilizada** | Python 3.13.7 |
 | **Biblioteca de paralelização** | `concurrent.futures` (`ProcessPoolExecutor`) |
-| **Manipulação de Dados** | `pandas` (com gerenciamento de tipos otimizado em nível de I/O) |
 
 ---
 
