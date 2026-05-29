@@ -41,7 +41,7 @@ A riqueza estrutural da base permite que o sistema identifique desde a macro man
 
 * **Linguagem:** Python 3.13.7
 * **Processamento e Concorrência:** `concurrent.futures`, `multiprocessing`
-* **Manipulação de Dados Massivos:** `pandas` (leitura em *chunks* otimizada via *low_memory*)
+
 * **Gerenciamento de Sistema:** `os`, `time`, `glob`
 * **Plotagem de Gráficos (Relatórios):** `matplotlib`
 
@@ -53,7 +53,7 @@ A riqueza estrutural da base permite que o sistema identifique desde a macro man
 O volume de dados exige armazenamento local. Crie a pasta `dados/` na raiz do projeto e deposite todos os arquivos `.csv` oriundos do dataset original do Kaggle.
 
     # Instalação das dependências necessárias para manipulação e plotagem de dados
-    pip install pandas matplotlib tabulate
+   
 
 ### 2. A Bateria de Testes (*Benchmarks*)
 O repositório conta com *scripts* isolados para a aferição de métricas. O motor principal de paralelização pode ser submetido a testes de carga utilizando:
