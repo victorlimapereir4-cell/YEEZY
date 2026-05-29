@@ -56,7 +56,7 @@ Abaixo está disposto o tempo médio de execução serial obtido na bateria de t
 | Nº Threads/Processos | Tempo de Execução (s) |
 | :---: | :---: |
 | **1 (Serial)** | 59.47 |
-
+| **12** | 17.20 | 3.46 | 0.29 |
 ---
 
 # 5. Cálculo de Speedup e Eficiência
