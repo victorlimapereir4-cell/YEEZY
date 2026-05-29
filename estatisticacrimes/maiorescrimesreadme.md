@@ -73,20 +73,6 @@ Métrica que indica a taxa de aproveitamento real de cada núcleo adicionado ao 
 
 ---
 
-# 6. Tabela de Resultados Consolidados
-
-Utilizando os tempos coletados durante as execuções, a tabela consolidada de desempenho apresenta o seguinte comportamento:
-
-| Threads/Processos | Tempo (s) | Speedup | Eficiência |
-| :---: | :---: | :---: | :---: |
-| **1 (Serial)** | 59.47 | 1.00 | 1.00 |
-| **2** | 34.86 | 1.71 | 0.85 |
-| **4** | 22.29 | 2.67 | 0.67 |
-| **8** | 18.50 | 3.21 | 0.40 |
-| **12** | 17.20 | 3.46 | 0.29 |
-
----
-
 # 7. Gráficos de Desempenho
 
 ### Gráfico 1: Tempo de Execução em Função do Número de Processos
@@ -102,19 +88,13 @@ Utilizando os tempos coletados durante as execuções, a tabela consolidada de d
 
 # 10. Análise Crítica dos Resultados
 
-* **Análise do Speedup:** O ganho de velocidade foi imediato e expressivo ao abandonar a arquitetura de processamento serial. Com 2 processos, o algoritmo reduziu o tempo para 34.86s. A melhor relação de escalabilidade ocorreu com **4 processos**, reduzindo o tempo original em mais da metade (22.29s) com uma aceleração real de 2.67x.
-* **O Ponto de Inflexão da Eficiência:** A eficiência do sistema começou a sofrer uma degradação severa a partir de 8 processos. Embora o tempo absoluto tenha caído para 18.50s, a eficiência caiu para 40%. Ao testar o limite de 12 processos, o ganho de tempo foi insignificante (apenas 1.30 segundo mais rápido que o teste com 8), fazendo com que a eficiência despencasse para 29%.
-* **Identificação de Gargalos Computacionais:** 1. **Saturação de I/O de Disco (Gargalo Principal):** Como estamos lidando com gigabytes de dados espalhados em dezenas de arquivos, o barramento de leitura física do armazenamento satura rapidamente. Adicionar mais processos de CPU a partir de um certo ponto não acelera a velocidade com que o disco local extrai as linhas textuais dos arquivos.
-  2. **Overhead de Serialização (IPC no Python):** A arquitetura do Python requer o uso de múltiplos processos (e não threads puras) para contornar o *Global Interpreter Lock (GIL)*. Isso gera um custo (*overhead*) adaptativo alto, pois os blocos de dados gerados em cada núcleo precisam ser serializados via protocolo *Pickle* para trafegar na memória até o processo pai unificador.
-  3. **Lei de Amdahl:** A fração puramente serial do programa (o agrupamento mestre final e a eliminação de duplicidades inter-arquivos na thread principal) limita o speedup máximo atingível, conforme previsto teoricamente na disciplina.
+A execução serial apresentou um tempo médio de 59.47 segundos durante a bateria de testes empíricos. Esse resultado evidencia o elevado custo computacional do processamento integral dos arquivos em um único fluxo de execução, concentrando todas as operações de leitura, tratamento e consolidação dos dados em apenas uma instância do programa.
 
----
+O desempenho observado demonstra que tarefas envolvendo grandes volumes de dados textuais possuem impacto significativo tanto no processamento quanto nas operações de entrada e saída (I/O), especialmente devido à necessidade de leitura contínua dos arquivos em disco.
 
-# 11. Conclusão
+Além disso, a abordagem serial evidencia limitações naturais de escalabilidade, já que todas as etapas do algoritmo — leitura, processamento e consolidação — ocorrem sequencialmente, sem divisão de carga computacional. Dessa forma, o tempo total de execução permanece diretamente dependente da capacidade individual do processador e da velocidade de acesso ao armazenamento.
 
-A aplicação do processamento paralelo provou ser uma solução robusta e indispensável para a manipulação de dados de segurança pública em larga escala. Sair de uma rotina sequencial engessada de quase um minuto para uma resposta consolidada de toda a malha criminal de São Paulo em apenas 17.20 segundos abre portas para o desenvolvimento de ferramentas ágeis voltadas ao planejamento estratégico de viaturas e otimização de prontas-respostas operacionais.
-
-O ponto ótimo de operação computacional na máquina de testes localizou-se na faixa de **4 processos simultâneos**, equilibrando perfeitamente a aceleração temporal (2.67x) com o nível de eficiência energética e de hardware (67%). Como evolução direta da implementação, sugere-se a migração do armazenamento em arquivos CSV textuais para sistemas de bancos de dados relacionais indexados ou estruturas NoSQL com suporte nativo a consultas paralelas distribuídas, extinguindo o gargalo de leitura mecânica local.
+Outro fator relevante é que operações de manipulação textual e verificação de duplicidades tendem a aumentar progressivamente o custo computacional conforme o volume de dados cresce, tornando a execução serial menos eficiente para cenários de larga escala.
 
 ---
 
