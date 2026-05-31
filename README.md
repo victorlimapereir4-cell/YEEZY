@@ -1,4 +1,4 @@
-# 📊 Inteligência Criminal em Larga Escala: Programação Serial vs. Concorrente
+#  Inteligência Criminal em Larga Escala: Programação Serial vs. Concorrente
 
 **Disciplina:** Programação Concorrente  
 **Alunos:** Arthur Dias e Victor Hugo  
@@ -11,7 +11,7 @@
 
 ---
 
-## 📂 Sobre o Ecossistema de Dados
+##  Sobre o Ecossistema de Dados
 
 A fonte primária é o banco de dados [Crime Data in Brazil (Kaggle)](https://www.kaggle.com/datasets/inquisitivecrow/crime-data-in-brazil), que condensa milhares de registros extraídos do Sistema de Registro Digital de Ocorrências (R.D.O.) do Estado de São Paulo. 
 
@@ -26,7 +26,7 @@ A riqueza estrutural da base permite que o sistema identifique desde a macro man
 
 ---
 
-## 🎯 Objetivos de Engenharia e Análise
+##  Objetivos de Engenharia e Análise
 
 1. **Motor de Ingestão Resiliente:** Desenvolver rotinas capazes de ler arquivos pesados em lotes (*chunks*), contornando limitações de Memória RAM na máquina hospedeira.
 2. **Data Cleansing Avançado:** Implementar filtros em tempo real para eliminação de anomalias, como a duplicidade crônica de Boletins de Ocorrência com múltiplas vítimas (utilizando as chaves `ID_DELEGACIA`, `ANO_BO` e `NUM_BO`).
@@ -37,7 +37,7 @@ A riqueza estrutural da base permite que o sistema identifique desde a macro man
 
 ---
 
-## 🛠️ Stack Tecnológico
+##  Stack Tecnológico
 
 * **Linguagem:** Python 3.13.7
 * **Processamento e Concorrência:** `concurrent.futures`, `multiprocessing`
@@ -47,7 +47,7 @@ A riqueza estrutural da base permite que o sistema identifique desde a macro man
 
 ---
 
-## 🚀 Estrutura de Execução
+##  Estrutura de Execução
 
 ### 1. Preparação do Ambiente
 O volume de dados exige armazenamento local. Crie a pasta `dados/` na raiz do projeto e deposite todos os arquivos `.csv` oriundos do dataset original do Kaggle.
@@ -65,7 +65,7 @@ O repositório conta com *scripts* isolados para a aferição de métricas. O mo
 ---
 ---
 
-# 📑 RELATÓRIO TÉCNICO: Mapeamento dos Maiores Índices Criminais por Seccional (São Paulo Capital)
+#  RELATÓRIO TÉCNICO: Mapeamento dos Maiores Índices Criminais por Seccional (São Paulo Capital)
 **Contexto:** Entrega de Marco de Teste Empírico de Desempenho Computacional (Serial vs. Concorrente)
 
 ## 1. Descrição do Problema
@@ -128,15 +128,7 @@ $$Eficiência(p) = \frac{Speedup(p)}{p}$$
 
 ## 6. Gráficos de Desempenho
 
-### Gráfico 1: Tempo de Execução em Função do Número de Processos
-*(Eixo X: Número de Processos | Eixo Y: Tempo de Execução em Segundos)* ![Gráfico Tempo Execução](graficos/tempo_execucao.png)
-
-### Gráfico 2: Speedup Obtido vs. Speedup Ideal (Linear)
-*(Eixo X: Número de Processos | Eixo Y: Fator de Aceleração Speedup)* ![Gráfico Speedup](graficos/speedup.png)
-
-### Gráfico 3: Curva de Caimento da Eficiência da Paralelização
-*(Eixo X: Número de Processos | Eixo Y: Eficiência entre 0 e 1)* ![Gráfico Eficiência](graficos/eficiencia.png)
-
+N/A
 ---
 
 ## 7. Análise Crítica dos Resultados
@@ -151,7 +143,7 @@ Outro fator relevante é que operações de manipulação textual e verificaçã
 
 ---
 
-## 📋 APÊNDICE: Extração Estatística Realizada
+##  APÊNDICE: Extração Estatística Realizada
 
 Abaixo constam os microdados consolidados gerados pelo algoritmo concorrente. Eles revelam o panorama real e as manchas criminais dominantes identificadas nas principais Seccionais da Capital Paulista durante o período amostral:
 
