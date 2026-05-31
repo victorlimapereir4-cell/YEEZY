@@ -133,14 +133,13 @@ N/A
 
 ## 7. Análise Crítica dos Resultados
 
-A execução serial apresentou um tempo médio de 59.47 segundos durante a bateria de testes empíricos. Esse resultado evidencia o elevado custo computacional do processamento integral dos arquivos em um único fluxo de execução, concentrando todas as operações de leitura, tratamento e consolidação dos dados em apenas uma instância do programa.
+A execução serial, programada estritamente em Python puro (sem o uso de bibliotecas com motores de leitura otimizados em linguagem C, como o Pandas), apresentou um tempo expressivo de **115.92 segundos** durante a bateria de testes empíricos. Esse resultado evidencia o elevado custo computacional do processamento integral dos arquivos em um único fluxo de execução, forçando o interpretador a ler, higienizar e consolidar dezenas de milhões de registros linha por linha em uma única instância do processador.
 
-O desempenho observado demonstra que tarefas envolvendo grandes volumes de dados textuais possuem impacto significativo tanto no processamento quanto nas operações de entrada e saída (I/O), especialmente devido à necessidade de leitura contínua dos arquivos em disco.
+O desempenho observado escancara o gargalo técnico gerado por tarefas simultaneamente *I/O-bound* (leitura contínua no disco de múltiplos arquivos) e *CPU-bound* (verificação nativa de duplicidades e ordenação em memória). A ausência de paralelização cria uma fila de espera ociosa restritiva: enquanto a *thread* aguarda a leitura do próximo CSV, os demais núcleos do equipamento permanecem completamente inutilizados.
 
-Além disso, a abordagem serial evidencia limitações naturais de escalabilidade, já que todas as etapas do algoritmo — leitura, processamento e consolidação — ocorrem sequencialmente, sem divisão de carga computacional. Dessa forma, o tempo total de execução permanece diretamente dependente da capacidade individual do processador e da velocidade de acesso ao armazenamento.
+É imperativo destacar o contexto de *hardware* deste experimento. O marco de quase dois minutos de lentidão foi registrado em uma máquina particular de alto desempenho. Extrapolando este mesmo algoritmo sequencial para um ambiente de maquinário educacional padrão (como os computadores convencionais dos laboratórios da instituição), o abismo de performance seria severamente ampliado, muito provavelmente ultrapassando a marca de 5 a 10 minutos de travamento computacional contínuo.
 
-Outro fator relevante é que operações de manipulação textual e verificação de duplicidades tendem a aumentar progressivamente o custo computacional conforme o volume de dados cresce, tornando a execução serial menos eficiente para cenários de larga escala.
-
+Portanto, a abordagem serial demonstra limitações de escalabilidade insustentáveis para *Big Data*. O salto para a versão concorrente cessa de ser apenas uma "otimização" e passa a ser uma exigência arquitetural. A distribuição da carga provou ser essencial para contornar as limitações físicas do *single-core*, justificando integralmente o uso de *ProcessPoolExecutor* para esmagar o gargalo temporal do sistema.
 ---
 
 ##  APÊNDICE: Extração Estatística Realizada
