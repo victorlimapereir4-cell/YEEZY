@@ -140,6 +140,7 @@ O desempenho observado escancara o gargalo técnico gerado por tarefas simultane
 É imperativo destacar o contexto de *hardware* deste experimento. O marco de quase dois minutos de lentidão foi registrado em uma máquina particular de alto desempenho. Extrapolando este mesmo algoritmo sequencial para um ambiente de maquinário educacional padrão (como os computadores convencionais dos laboratórios da instituição), o abismo de performance seria severamente ampliado, muito provavelmente ultrapassando a marca de 5 a 10 minutos de travamento computacional contínuo.
 
 Portanto, a abordagem serial demonstra limitações de escalabilidade insustentáveis para *Big Data*. O salto para a versão concorrente cessa de ser apenas uma "otimização" e passa a ser uma exigência arquitetural. A distribuição da carga provou ser essencial para contornar as limitações físicas do *single-core*, justificando integralmente o uso de *ProcessPoolExecutor* para esmagar o gargalo temporal do sistema.
+
 ---
 
 ##  APÊNDICE: Extração Estatística Realizada
