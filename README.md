@@ -156,7 +156,15 @@ $$Eficiência(4) = \frac{4{,}59}{4} \times 100 = 114{,}7\%$$
 
 ## 6. Gráficos de Desempenho
 
-N/A
+![Gráfico Tempo Execução](graficos/tempo_execucao.png)
+
+---
+
+![Gráfico Speedup](graficos/speedup.png)
+
+---
+
+![Gráfico Eficiência](graficos/eficiencia.png)
 
 ---
 
